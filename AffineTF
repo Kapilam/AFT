@@ -1,0 +1,108 @@
+// AffineTF_v1.cpp : Defines the entry point for the console application.
+//
+
+
+#include "stdafx.h"
+#include <iostream> 
+
+using namespace std;
+
+// Generate a class to define 2D Affine Transform Parameters 
+class Parameters
+{
+public:
+	// Define Variables for 2D Affine Transform
+	int M_00;
+	int M_01;
+	int M_10;
+	int M_11;
+	int D_x;
+	int D_y;
+
+	// Define Variables for Inverse 2D Affine Transform
+	int invM_00;
+	int invM_01;
+	int invM_10;
+	int invM_11;
+	int invD_x;
+	int invD_y;
+
+
+};
+
+// Define a class to hold 2D  x and y cordinates
+class Cordinate
+{
+public:
+	int x;
+	int y;
+	int inv_x;
+	int inv_y;
+};
+
+// Function to apply 2D affine transformation
+Cordinate AffineTransform(int x, int y, Parameters Param)
+{
+	Cordinate Cord; // Declare Cord a Cordiante
+
+	Cord.x = Param.M_00*x + Param.M_01*y + Param.D_x;  //calculate transformed x cordinate 
+	Cord.y = Param.M_10*x + Param.M_11*y + Param.D_y; //calculate transformed y cordinate 
+
+	return Cord;
+}
+
+// Function to apply inverse 2D affine transformation
+Cordinate InverseAffineTransform(int x, int y, Parameters Param)
+{
+	Cordinate Cord; // Declare Cord a Cordiante
+
+	// Define Variables for Inverse 2D Affine Transform
+	
+	Param.invM_00 = Param.M_11 / (Param.M_00*Param.M_11 - Param.M_01*Param.M_10);
+	Param.invM_01 = -Param.M_01 / (Param.M_00*Param.M_11 - Param.M_01*Param.M_10);
+	Param.invM_10 = -Param.M_10 / (Param.M_00*Param.M_11 - Param.M_01*Param.M_10);
+	Param.invM_11 = Param.M_00 / (Param.M_00*Param.M_11 - Param.M_01*Param.M_10);
+	Param.invD_x = -Param.D_x*Param.invM_00 - Param.D_y*Param.invM_01;
+	Param.invD_y = -Param.D_x*Param.invM_10 - Param.D_y*Param.invM_11;
+
+	
+
+
+	Cord.inv_x= Param.invM_00*x + Param.invM_01*y + Param.invD_x;  //calculate inverse transformed x cordinate 
+	Cord.inv_y = Param.invM_10*x + Param.invM_11*y + Param.invD_y; //calculate inversed transformed y cordinate 
+	
+	
+	return Cord;
+}
+
+
+int main()
+{
+	Parameters Param1; // Declare Param1 a Pameters
+	Param1.M_00 = 2;
+	Param1.M_01 = 1;
+	Param1.M_10 = 1;
+	Param1.M_11 = 1;
+	Param1.D_x = 2;
+	Param1.D_y = 5;
+
+	Cordinate Cordinate1; // Declare Cordinate1 a Cordiante
+
+	// Calculate Affine Transform
+	Cordinate1 = AffineTransform(2, 3, Param1);
+	cout << "X_dash =" << Cordinate1.x << endl;
+	cout << "Y_dash =" << Cordinate1.y << endl;
+
+
+	// Calculate Inverse Affine Transform
+	Cordinate1 = InverseAffineTransform(9, 10, Param1);
+	cout << "X_dash =" << Cordinate1.inv_x << endl;
+	cout << "Y_dash =" << Cordinate1.inv_y << endl;
+	
+	cin.ignore();
+
+
+	return 0;
+}
+
+
